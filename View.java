@@ -14,5 +14,5 @@ public class View {
     public void printResult() {
         //controller.getStateGeneration
     }
-
+ 
 }
