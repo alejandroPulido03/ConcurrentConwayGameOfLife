@@ -93,12 +93,26 @@ public class Game {
     }
 
     public static void main(String[] args) {
-        boolean[][] initialState = {
-            {true, false, true},
-            {false, true, false},
-            {true, false, true}};
 
-        Game game = new Game(initialState, 18);
+        /* Scanner scanner = new Scanner(System.in);
+
+        int n = Integer.parseInt(scanner.nextLine());
+        boolean[][] matriz = new boolean[n][n];
+        for (int i = 0; i < n; i++) {
+            String[] valores = scanner.nextLine().split(",");
+            for (int j = 0; j < n; j++) {
+                matriz[i][j] = Boolean.parseBoolean(valores[j].trim());
+            }
+        }
+        scanner.close();
+        boolean[][] initialState = matriz; */
+        boolean[][] initialState = {
+            {false, true, true},
+            {false, false, false},
+            {false, false, true}
+        };
+
+        Game game = new Game(initialState, 2);
         game.runGame();
     }
 }
