@@ -1,5 +1,8 @@
 package Game;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
@@ -93,26 +96,33 @@ public class Game {
     }
 
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
 
-        /* Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the number of generations: ");
+        int numGenerations = Integer.parseInt(scanner.nextLine());
 
-        int n = Integer.parseInt(scanner.nextLine());
-        boolean[][] matriz = new boolean[n][n];
-        for (int i = 0; i < n; i++) {
-            String[] valores = scanner.nextLine().split(",");
-            for (int j = 0; j < n; j++) {
-                matriz[i][j] = Boolean.parseBoolean(valores[j].trim());
+        System.out.print("Enter the file path: ");
+        String filePath = scanner.nextLine();
+
+        try (Scanner fileScanner = new Scanner(new File(filePath))) {
+            int n = Integer.parseInt(fileScanner.nextLine());
+            boolean[][] matriz = new boolean[n][n];
+
+            for (int i = 0; i < n; i++) {
+                String[] valores = fileScanner.nextLine().split(",");
+                for (int j = 0; j < n; j++) {
+                    matriz[i][j] = Boolean.parseBoolean(valores[j].trim());
+                }
             }
+
+            boolean[][] initialState = matriz;
+
+            Game game = new Game(initialState, numGenerations);
+            game.runGame();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + filePath);
         }
         scanner.close();
-        boolean[][] initialState = matriz; */
-        boolean[][] initialState = {
-            {false, true, true},
-            {false, false, false},
-            {false, false, true}
-        };
-
-        Game game = new Game(initialState, 2);
-        game.runGame();
     }
+
 }
