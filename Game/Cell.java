@@ -2,6 +2,8 @@ package Game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 import MailBox.Mailbox;
 
@@ -12,13 +14,15 @@ public class Cell extends Thread {
     private Mailbox mailbox;
     private List<Cell> neighborhood;
     private int[] id;
+    private CyclicBarrier matrix_barrier;
 
-    public Cell(int numRow, int numCol, boolean status) {
+    public Cell(int numRow, int numCol, boolean status, CyclicBarrier barrier) {
         this.status = status;
         this.numRow = numRow;
         this.lifeAround = 0;
         this.neighborhood = new ArrayList<Cell>();
         this.id = new int[] { numRow, numCol };
+        this.matrix_barrier = barrier;
     }
 
     public boolean getStatus() {
@@ -63,9 +67,13 @@ public class Cell extends Thread {
     public void run() {
         this.mailbox.runCommunications();
         this.calculateStatus();
-        System.out.println("Updates: " + updates + " for: " + getCellId());
-        System.out.println("Life around: " + lifeAround + " for: " + getCellId());
-        System.out.println("State of " + getCellId() + ": " + this.status);
+        try {
+            this.matrix_barrier.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (BrokenBarrierException e) {
+            e.printStackTrace();
+        }
     }
 
 }

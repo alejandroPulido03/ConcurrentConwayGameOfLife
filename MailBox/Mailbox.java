@@ -36,7 +36,6 @@ public class Mailbox {
         this.receiver = new Receiver(this);
     }
 
-    
     public int getNetworkLength() {
         return networkLength;
     }
@@ -52,20 +51,20 @@ public class Mailbox {
         while (this.buffer.size() == this.bufferSize)
             wait();
         this.buffer.add(message);
-        notifyAll();
     }
 
     /*
      * Remueve un mensaje del buffer del mailbox (consumidor)
      */
-    public synchronized void checkMailbox() throws InterruptedException {
+    public void checkMailbox() throws InterruptedException {
         while (this.buffer.isEmpty())
-            wait();
-        boolean message = this.buffer.remove(0);
-        notifyAll();
-        this.processMessage(message);
+            Thread.yield();
+        synchronized (this) {
+            boolean message = this.buffer.remove(0);
+            notify();
+            this.processMessage(message);
+        }
     }
-
 
     public void runCommunications() {
         // Los joins esperan a que los hilos mueran antes de continuar
