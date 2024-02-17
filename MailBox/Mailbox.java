@@ -53,21 +53,24 @@ public class Mailbox {
         this.buffer.add(message);
     }
 
-    private synchronized boolean checkEmpty(){
-        return this.buffer.isEmpty();
+    private synchronized boolean useMessage() {
+        if (this.buffer.isEmpty())
+            return false;
+        else {
+            boolean message = this.buffer.remove(0);
+            notify();
+            this.processMessage(message);
+            return true;
+        }
     }
 
     /*
      * Remueve un mensaje del buffer del mailbox (consumidor)
      */
     public void checkMailbox() throws InterruptedException {
-        while (checkEmpty())
+        while (!useMessage())
             Thread.yield();
-        synchronized (this) {
-            boolean message = this.buffer.remove(0);
-            notify();
-            this.processMessage(message);
-        }
+            
     }
 
     public void runCommunications() {
